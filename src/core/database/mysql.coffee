@@ -21,7 +21,7 @@ class Mysql
 			throw new Error('connection has not be configured')
 		@connectionPool.getConnection((err, conn) =>
 			if err != null
-				defer.rejcet(err) 
+				defer.reject(err) 
 			else 
 				defer.resolve(conn)
 		)

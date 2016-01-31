@@ -8,6 +8,7 @@ ApiError = require('./apiError')
 baseutil = require('./libs/util')
 response = require('./libs/response')
 validater = require('./libs/validater')
+regularizer = require('./libs/regularizer')
 
 class BaseController
 
@@ -50,13 +51,14 @@ class BaseController
 					converted = null
 					for ruleName in ruleArr
 						resObj = validater.validate(ruleName, inputParam[key])
-						if resObj.result == false
-							isValid = false
-							cause = resObj.failCause
-							break
-						else 
-							if resObj.converted != null
-								converted = resObj.converted
+						if resObj != null 
+							if resObj.result == false
+								isValid = false
+								cause = resObj.failCause
+								break
+							else 
+								if resObj.converted != null
+									converted = resObj.converted
 					if isValid == false
 						throw new ApiError('INVALID_PARAM', cause + ' : ' + key)
 					else
@@ -69,7 +71,13 @@ class BaseController
 		)
 		return param 
 
-	sendSuccess: (data, res) ->
+	sendSuccess: (data, res) =>
 		response.sendSuccess(data, res)
+
+	regularize: (data, ruleArr, options = null) =>
+		regularizer.regularize(data, ruleArr, options)
+
+	regularizeList: (list, ruleArr, options = null) =>
+		regularizer.regularizeList(data, ruleArr, options)
 
 module.exports = BaseController

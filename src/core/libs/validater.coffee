@@ -22,8 +22,10 @@ Validater =
 
 	# paramter regularization / purification 수행 
 	validate: (ruleName, value) ->
+		if ruleName == 'nullable' 
+			return null
 		if @.validationRule[ruleName] == undefined 
-			throw new Error('invalid rule name')
+			throw new Error('invalid rule name : ' + ruleName)
 		methodName = @.validationRule[ruleName]
 		retObj = @[methodName](value)
 		return retObj
@@ -65,10 +67,10 @@ Validater =
 
 	# or you can add custom validation rule methods.
 	# custom validation rules 
-	
+
 	validateIsMemberToken: (value) ->
 		ret = JSON.parse(JSON.stringify(@.resultBase))
-
+		
 		return ret
 
 module.exports = Validater

@@ -33,6 +33,7 @@ app.all('*', (err, req, res, next) ->
 )
 
 # error handler 
+'''
 app.use((err, req, res, next) ->
 	if cfg.mode == 'release' 
 		response.sendError(err, res, next)	
@@ -40,6 +41,7 @@ app.use((err, req, res, next) ->
 		console.log(err)
 		response.sendError(err, res, next)
 )
+'''
 
 io(cfg.socketIoPort).listen(app.listen(cfg.expressPort))
 log.i('express & socket.io started')
