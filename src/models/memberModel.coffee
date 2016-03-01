@@ -22,7 +22,7 @@ class MemberModel extends BaseModel
 				SET 
 					profile_image_no=? ,
 					nick=? ,
-					nation_code=? ,
+					nation_code=? , 
 					total_like_count=? ,
 					following_count=? ,
 					followed_count=? ,
@@ -30,10 +30,11 @@ class MemberModel extends BaseModel
 			'''
 		param = [
 			parseInt(memberObj.profileImageNo)
-			memberObj.nick 
-			memberObj.nationCode 
+			memberObj.nick
+			memberObj.nationCode
 			0, 0, 0
 		]
+
 		@.db.query(query, param)
 		.then((result) =>
 			defer.resolve(result)

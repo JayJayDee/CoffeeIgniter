@@ -101,4 +101,11 @@ class BaseModel
 	deleteElem: (pk) =>
 		log.i('delete-elem')
 
+	# get value in object, if undefined, returns null 
+	getEmptiable: (obj, keyName) =>
+		value = obj[keyName]
+		if value == undefined 
+			return null 
+		return value
+
 module.exports = BaseModel

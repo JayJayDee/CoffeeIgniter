@@ -7,13 +7,16 @@ log = require('./logger')
 ApiError = require('./apiError')
 baseutil = require('./libs/util')
 response = require('./libs/response')
-validater = require('./libs/validater')
+Validater = require('../libs/validater')
 regularizer = require('./libs/regularizer')
 
 class BaseController
 
+	@validater = null 
+
 	constructor: (controllerName) ->
 		log.i('Controller intialized : ' + controllerName)
+		@validater = new Validater()
 
 	# controller의 method들에서 지정한 parameter rule에 따라 parameter를 
 	# 반환 및 parameter 예외처리 
@@ -50,7 +53,7 @@ class BaseController
 					cause = null
 					converted = null
 					for ruleName in ruleArr
-						resObj = validater.validate(ruleName, inputParam[key])
+						resObj = @validater.validate(ruleName, inputParam[key])
 						if resObj != null 
 							if resObj.result == false
 								isValid = false

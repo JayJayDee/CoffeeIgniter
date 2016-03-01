@@ -26,16 +26,34 @@ util.parseBoolean = (booleanExpr) ->
 # AES Encryption 
 util.encryptAes = (data, key) ->
 	cipher = crypto.createCipher('aes-256-cbc',key)
-	encipheredContent = cipher.update(data,'utf8','hex')
-	encipheredContent += cipher.final('hex')
+	encipheredContent = cipher.update(data,'utf8','base64')
+	encipheredContent += cipher.final('base64')
 	return encipheredContent
 
 # AES Decryption 
 util.decryptAes = (data, key) ->
-	decipher = crypto.createDecipher('aes-256-cbc', key)
-	decipheredPlaintext = decipher.update(data, 'hex', 'utf8')
-	decipheredPlaintext += decipher.final('utf8')
+	decipheredPlaintext = null 
+	try 
+		decipher = crypto.createDecipher('aes-256-cbc', key)
+		decipheredPlaintext = decipher.update(data, 'base64', 'utf8')
+		decipheredPlaintext += decipher.final('utf8')
+	catch err 
+		return null 
 	return decipheredPlaintext
+
+# convert base64-string to safe-base64-string
+util.base64toSafeBase64 = (base64) ->
+	base64 = base64.replace(/\+/g, '-')
+	base64 = base64.replace(/\//g, '_')
+	base64 = base64.replace(/\=/g, ',')
+	return base64
+
+# convert safe-base64-string to base64-string
+util.safeBase64toBase64 = (safeBase64) ->
+	safeBase64 = safeBase64.replace(/\-/g, '+')
+	safeBase64 = safeBase64.replace(/\_/g, '/')
+	safeBase64 = safeBase64.replace(/\,/g, '=')
+	return safeBase64	
 
 # padding add
 util.pad = (text) ->

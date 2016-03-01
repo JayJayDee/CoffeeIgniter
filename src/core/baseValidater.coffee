@@ -1,27 +1,34 @@
 # parameter validater
 
-log = require('../logger')
-util = require('./util')
+log = require('./logger')
+coreUtil = require('./libs/util')
 _ = require('underscore')
 
-Validater = 
+class BaseValidater 
 
 	# validation rule name - method name map
-	validationRule: 
+	validationRule:
 		integer: 'validateIsInteger'
 		boolean: 'validateIsBoolean'
 		date_ymd: 'validateIsDateYMD' 
 		time_hms: 'validateIsTimeHMS' 
 		datetime_ymdhms: 'validateIsDateTimeYMDHMS'
 
+		member_token: 'validateIsMemberToken'
+		device_type: 'validateIsDeviceType'
+
 	# result base.
-	resultBase:
+	resultBase: 
 		result: false
 		converted: null
 		failCause: null 
 
+	# register validation rule - method pair 
+	registerValidationRule: (ruleName, methodName) =>
+		@.validationRule[ruleName] = methodName 
+
 	# paramter regularization / purification 수행 
-	validate: (ruleName, value) ->
+	validate: (ruleName, value) =>
 		if ruleName == 'nullable' 
 			return null
 		if @.validationRule[ruleName] == undefined 
@@ -31,9 +38,9 @@ Validater =
 		return retObj
 
 	# integer validation
-	validateIsInteger: (value) ->
+	validateIsInteger: (value) =>
 		ret = JSON.parse(JSON.stringify(@.resultBase))
-		ret.result = util.isInteger(value);
+		ret.result = coreUtil.isInteger(value);
 		if ret.result == true
 			ret.converted = parseInt(value)
 		else 
@@ -41,36 +48,28 @@ Validater =
 		return ret
 
 	# boolean validation
-	validateIsBoolean: (value) ->
+	validateIsBoolean: (value) =>
 		ret = JSON.parse(JSON.stringify(@.resultBase))
-		ret.result = util.isBoolean(value);
+		ret.result = coreUtil.isBoolean(value);
 		if ret.result == true
-			ret.converted = util.parseBoolean(value)
+			ret.converted = coreUtil.parseBoolean(value)
 		else 
 			ret.failCause = 'not a boolean'
 		return ret
 
-	validateIsDateYMD: (value) ->
+	validateIsDateYMD: (value) =>
 		ret = @.resultBase.clone()
 		log.i('validate - isdateYMD')
 		return ret
 
-	validateIsTimeHMS: (value) ->
+	validateIsTimeHMS: (value) =>
 		ret = @.resultBase.clone()
 		log.i('validate - isTime H:M:S')
 		return ret
 
-	validateIsDateTimeYMDHMS: (value) ->
+	validateIsDateTimeYMDHMS: (value) =>
 		ret = @.resultBase.clone()
 		log.i('validate - isDateTime_YMDHMS')
 		return ret
 
-	# or you can add custom validation rule methods.
-	# custom validation rules 
-
-	validateIsMemberToken: (value) ->
-		ret = JSON.parse(JSON.stringify(@.resultBase))
-		
-		return ret
-
-module.exports = Validater
+module.exports = BaseValidater
